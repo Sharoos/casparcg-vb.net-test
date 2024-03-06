@@ -19,8 +19,57 @@ Public Class Form1
     Private mediaDuration As Integer
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim openFileDialog1 As New OpenFileDialog()
 
-        aa.Connect("127.0.0.1", 5250)
+        openFileDialog1.Filter = "Executable Files (*.exe)|*.exe|All files (*.*)|*.*"
+        openFileDialog1.FilterIndex = 1
+        openFileDialog1.RestoreDirectory = True
+
+        If openFileDialog1.ShowDialog() = DialogResult.OK Then
+            Dim casparCGPath As String = openFileDialog1.FileName
+            Dim casparCGDirectory As String = IO.Path.GetDirectoryName(casparCGPath)
+
+            ' Set the working directory to the directory containing CasparCG.exe
+            Dim processStartInfo As New ProcessStartInfo(casparCGPath)
+            processStartInfo.WorkingDirectory = casparCGDirectory
+
+            Try
+                Process.Start(processStartInfo) ' Open CasparCG.exe using Process.Start
+            Catch ex As Exception
+                MessageBox.Show("Error starting CasparCG.exe: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+            End Try
+
+            ' Introduce a delay to allow CasparCG to fully start
+            System.Threading.Thread.Sleep(1000) ' Adjust the delay as needed
+
+            ' Connect to the server
+            aa.Connect("127.0.0.1", 5250)
+
+            Try
+                ' Locate and manipulate windows
+                Dim p1() As Process = Process.GetProcessesByName("casparcg")
+                Dim iprocess As Integer
+                For iprocess = 0 To p1.GetUpperBound(0)
+                    If p1(iprocess).MainWindowTitle = "Screen consumer [1|1080p5000]" Then
+                        Exit For
+                    End If
+                Next iprocess
+
+                Dim parentedProcess As Process = p1(iprocess)
+                SetParent(parentedProcess.MainWindowHandle, Panel1.Handle)
+                SendMessage(parentedProcess.MainWindowHandle, 274, 61488, 0)
+
+                ' Embed the "Console Window Host" into Panel2
+                Dim consoleProcesses() As Process = Process.GetProcessesByName("Console Window Host")
+                If consoleProcesses.Length > 0 Then
+                    SetParent(consoleProcesses(0).MainWindowHandle, Panel2.Handle)
+                    SendMessage(consoleProcesses(0).MainWindowHandle, 274, 61488, 0)
+                End If
+            Catch ex As Exception
+                MessageBox.Show("Error manipulating windows: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End If
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
@@ -34,28 +83,8 @@ Public Class Form1
         aa.SendString("stop 1-1")
     End Sub
 
-    Private Sub Cmdshowcasparcgwindow_Click(sender As Object, e As EventArgs) Handles Cmdshowcasparcgwindow.Click
-        Try
-            Dim p1() As Process = Process.GetProcessesByName("casparcg")
-            Dim iprocess As Integer
-            For iprocess = 0 To p1.GetUpperBound(0)
-                If p1(iprocess).MainWindowTitle = "Screen consumer [1|1080p5000]" Then
-                    Exit For
-                End If
-            Next iprocess
+    Private Sub Cmdshowcasparcgwindow_Click(sender As Object, e As EventArgs)
 
-            parentedProcess = p1(iprocess)
-            SetParent(parentedProcess.MainWindowHandle, Panel1.Handle)
-            SendMessage(parentedProcess.MainWindowHandle, 274, 61488, 0)
-
-            ' Embed the "Console Window Host" into Panel2
-            Dim consoleProcesses() As Process = Process.GetProcessesByName("Console Window Host")
-            If consoleProcesses.Length > 0 Then
-                SetParent(consoleProcesses(0).MainWindowHandle, Panel2.Handle)
-                SendMessage(consoleProcesses(0).MainWindowHandle, 274, 61488, 0)
-            End If
-        Catch ex As Exception
-        End Try
     End Sub
 
 
@@ -68,7 +97,7 @@ Public Class Form1
     Private Shared Function SendMessage(hWnd As IntPtr, Msg As Integer, wParam As Integer, lParam As Integer) As IntPtr
     End Function
 
-    Private Sub Cmdoutcasparcgwindow_Click(sender As Object, e As EventArgs) Handles Cmdoutcasparcgwindow.Click
+    Private Sub Cmdoutcasparcgwindow_Click(sender As Object, e As EventArgs)
         Try
             SetParent(parentedProcess.MainWindowHandle, IntPtr.Zero)
         Catch ex As Exception
@@ -80,8 +109,18 @@ Public Class Form1
 
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         Try
-            SetParent(parentedProcess.MainWindowHandle, IntPtr.Zero)
+            ' Close the main window of the CasparCG process
+            parentedProcess.CloseMainWindow()
+            ' Give it some time to close gracefully
+            parentedProcess.WaitForExit(1000) ' Adjust the timeout as needed
+
+            ' If it hasn't exited yet, kill the process forcefully
+            If Not parentedProcess.HasExited Then
+                parentedProcess.Kill()
+            End If
         Catch ex As Exception
+            MessageBox.Show("Error closing CasparCG.exe: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
 End Class

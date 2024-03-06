@@ -31,8 +31,6 @@ Partial Class Form1
         Me.TextBox2 = New System.Windows.Forms.TextBox()
         Me.seekTimer = New System.Windows.Forms.Timer(Me.components)
         Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.Cmdshowcasparcgwindow = New System.Windows.Forms.Button()
-        Me.Cmdoutcasparcgwindow = New System.Windows.Forms.Button()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.Panel3 = New System.Windows.Forms.Panel()
         Me.SuspendLayout()
@@ -85,29 +83,10 @@ Partial Class Form1
         '
         'Panel1
         '
-        Me.Panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Panel1.Location = New System.Drawing.Point(255, 12)
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(395, 250)
         Me.Panel1.TabIndex = 8
-        '
-        'Cmdshowcasparcgwindow
-        '
-        Me.Cmdshowcasparcgwindow.Location = New System.Drawing.Point(255, 268)
-        Me.Cmdshowcasparcgwindow.Name = "Cmdshowcasparcgwindow"
-        Me.Cmdshowcasparcgwindow.Size = New System.Drawing.Size(75, 23)
-        Me.Cmdshowcasparcgwindow.TabIndex = 0
-        Me.Cmdshowcasparcgwindow.Text = "In"
-        Me.Cmdshowcasparcgwindow.UseVisualStyleBackColor = True
-        '
-        'Cmdoutcasparcgwindow
-        '
-        Me.Cmdoutcasparcgwindow.Location = New System.Drawing.Point(336, 268)
-        Me.Cmdoutcasparcgwindow.Name = "Cmdoutcasparcgwindow"
-        Me.Cmdoutcasparcgwindow.Size = New System.Drawing.Size(75, 23)
-        Me.Cmdoutcasparcgwindow.TabIndex = 9
-        Me.Cmdoutcasparcgwindow.Text = "Out"
-        Me.Cmdoutcasparcgwindow.UseVisualStyleBackColor = True
         '
         'Panel2
         '
@@ -128,11 +107,9 @@ Partial Class Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1242, 302)
+        Me.ClientSize = New System.Drawing.Size(670, 302)
         Me.Controls.Add(Me.Panel3)
         Me.Controls.Add(Me.Panel2)
-        Me.Controls.Add(Me.Cmdoutcasparcgwindow)
-        Me.Controls.Add(Me.Cmdshowcasparcgwindow)
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.TextBox2)
         Me.Controls.Add(Me.Button3)
@@ -153,8 +130,6 @@ Partial Class Form1
     Friend WithEvents TextBox2 As TextBox
     Friend WithEvents seekTimer As Timer
     Friend WithEvents Panel1 As Panel
-    Friend WithEvents Cmdshowcasparcgwindow As Button
-    Friend WithEvents Cmdoutcasparcgwindow As Button
     Friend WithEvents Panel2 As Panel
     Friend WithEvents Panel3 As Panel
 End Class
