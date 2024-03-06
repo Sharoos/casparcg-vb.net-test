@@ -105,19 +105,21 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
     End Sub
 
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         Try
-            ' Close the main window of the CasparCG process
-            parentedProcess.CloseMainWindow()
-            ' Give it some time to close gracefully
-            parentedProcess.WaitForExit(1000) ' Adjust the timeout as needed
+            Dim myProcesses() As Process
+            Dim myProcess As Process
 
-            ' If it hasn't exited yet, kill the process forcefully
-            If Not parentedProcess.HasExited Then
-                parentedProcess.Kill()
-            End If
+            myProcesses = Process.GetProcessesByName("casparcg")
+            For Each myProcess In myProcesses
+                myProcess.Kill()
+            Next
+
+            myProcesses = Nothing
+            myProcess = Nothing
         Catch ex As Exception
             MessageBox.Show("Error closing CasparCG.exe: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
