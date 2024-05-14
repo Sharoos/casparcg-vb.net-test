@@ -1,8 +1,5 @@
 ﻿Imports Svt.Caspar
-Imports System
-Imports System.Diagnostics
 Imports System.Runtime.InteropServices
-Imports System.Windows.Forms
 
 Public Class Form1
 
@@ -15,6 +12,7 @@ Public Class Form1
 
     Dim aa As New CasparDevice
     Private g_int_ChannelNumber As Integer = 1
+    Private g_int_ChannelNumber1 As Integer = 2
     Private g_int_PlaylistLayer As Integer = 1
     Private mediaDuration As Integer
 
@@ -41,7 +39,7 @@ Public Class Form1
             End Try
 
             ' Introduce a delay to allow CasparCG to fully start
-            System.Threading.Thread.Sleep(1000) ' Adjust the delay as needed
+            System.Threading.Thread.Sleep(2000) ' Adjust the delay as needed
 
             ' Connect to the server
             aa.Connect("127.0.0.1", 5250)
@@ -51,7 +49,7 @@ Public Class Form1
                 Dim p1() As Process = Process.GetProcessesByName("casparcg")
                 Dim iprocess As Integer
                 For iprocess = 0 To p1.GetUpperBound(0)
-                    If p1(iprocess).MainWindowTitle = "Screen consumer [1|1080p5000]" Then
+                    If p1(iprocess).MainWindowTitle = "Screen consumer [2|PAL]" Then
                         Exit For
                     End If
                 Next iprocess
@@ -61,11 +59,13 @@ Public Class Form1
                 SendMessage(parentedProcess.MainWindowHandle, 274, 61488, 0)
 
                 ' Embed the "Console Window Host" into Panel2
-                Dim consoleProcesses() As Process = Process.GetProcessesByName("Console Window Host")
+                Dim consoleProcesses() As Process = Process.GetProcessesByName("CasparCG Server 2.4.0 1e25c7a Stable x64 ")
                 If consoleProcesses.Length > 0 Then
                     SetParent(consoleProcesses(0).MainWindowHandle, Panel2.Handle)
                     SendMessage(consoleProcesses(0).MainWindowHandle, 274, 61488, 0)
                 End If
+                MoveWindowToSecondMonitor("casparcg", "Screen consumer [1|1080p5000]")
+                Cursor.Position = New Point(Screen.PrimaryScreen.Bounds.Width \ 2, Screen.PrimaryScreen.Bounds.Height \ 2)
             Catch ex As Exception
                 MessageBox.Show("Error manipulating windows: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -77,17 +77,17 @@ Public Class Form1
             TextBox1.Text = Replace(Replace(o.FileName, ":", ":\"), "\", "/")
         End If
         aa.SendString($"Play {g_int_ChannelNumber}-{g_int_PlaylistLayer} ""{TextBox1.Text}""")
+        aa.SendString($"Play {g_int_ChannelNumber1}-{g_int_PlaylistLayer} ""{TextBox1.Text}""")
     End Sub
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
         aa.SendString("stop 1-1")
+        aa.SendString("stop 2-1")
     End Sub
 
     Private Sub Cmdshowcasparcgwindow_Click(sender As Object, e As EventArgs)
 
     End Sub
-
-
 
     <DllImport("user32.dll")>
     Private Shared Function SetParent(hWndChild As IntPtr, hWndNewParent As IntPtr) As IntPtr
@@ -123,6 +123,27 @@ Public Class Form1
         Catch ex As Exception
             MessageBox.Show("Error closing CasparCG.exe: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    <DllImport("user32.dll", SetLastError:=True)>
+    Private Shared Function SetWindowPos(hWnd As IntPtr, hWndInsertAfter As IntPtr, x As Integer, y As Integer, cx As Integer, cy As Integer, uFlags As UInteger) As Boolean
+    End Function
+
+    Private Const SWP_NOSIZE As UInteger = &H1
+    Private Const SWP_NOZORDER As UInteger = &H4
+    Private Const SWP_SHOWWINDOW As UInteger = &H40
+
+    Private Sub MoveWindowToSecondMonitor(processName As String, windowTitle As String)
+        For Each process As Process In Process.GetProcessesByName(processName)
+            If process.MainWindowTitle = windowTitle AndAlso Screen.AllScreens.Length > 1 Then
+                SetWindowPos(process.MainWindowHandle, IntPtr.Zero, Screen.AllScreens(1).WorkingArea.Left, Screen.AllScreens(1).WorkingArea.Top, 0, 0, SWP_NOSIZE Or SWP_NOZORDER Or SWP_SHOWWINDOW)
+                Exit Sub
+            End If
+        Next
+    End Sub
+
+    Private Sub SomeMethod()
+
     End Sub
 
 End Class
