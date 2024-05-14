@@ -18,7 +18,7 @@ Public Class Form1
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Dim openFileDialog1 As New OpenFileDialog()
-
+        openFileDialog1.Title = "Locate casparcg.exe"
         openFileDialog1.Filter = "Executable Files (*.exe)|*.exe|All files (*.*)|*.*"
         openFileDialog1.FilterIndex = 1
         openFileDialog1.RestoreDirectory = True
@@ -73,6 +73,7 @@ Public Class Form1
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        o.Title = "Select media to play"
         If o.ShowDialog = DialogResult.OK Then
             TextBox1.Text = Replace(Replace(o.FileName, ":", ":\"), "\", "/")
         End If
