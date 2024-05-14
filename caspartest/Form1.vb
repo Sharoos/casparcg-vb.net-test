@@ -15,6 +15,7 @@ Public Class Form1
 
     Dim aa As New CasparDevice
     Private g_int_ChannelNumber As Integer = 1
+    Private g_int_ChannelNumber1 As Integer = 2
     Private g_int_PlaylistLayer As Integer = 1
     Private mediaDuration As Integer
 
@@ -41,7 +42,7 @@ Public Class Form1
             End Try
 
             ' Introduce a delay to allow CasparCG to fully start
-            System.Threading.Thread.Sleep(1000) ' Adjust the delay as needed
+            System.Threading.Thread.Sleep(2000) ' Adjust the delay as needed
 
             ' Connect to the server
             aa.Connect("127.0.0.1", 5250)
@@ -51,7 +52,7 @@ Public Class Form1
                 Dim p1() As Process = Process.GetProcessesByName("casparcg")
                 Dim iprocess As Integer
                 For iprocess = 0 To p1.GetUpperBound(0)
-                    If p1(iprocess).MainWindowTitle = "Screen consumer [1|1080p5000]" Then
+                    If p1(iprocess).MainWindowTitle = "Screen consumer [2|PAL]" Then
                         Exit For
                     End If
                 Next iprocess
@@ -77,17 +78,17 @@ Public Class Form1
             TextBox1.Text = Replace(Replace(o.FileName, ":", ":\"), "\", "/")
         End If
         aa.SendString($"Play {g_int_ChannelNumber}-{g_int_PlaylistLayer} ""{TextBox1.Text}""")
+        aa.SendString($"Play {g_int_ChannelNumber1}-{g_int_PlaylistLayer} ""{TextBox1.Text}""")
     End Sub
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
         aa.SendString("stop 1-1")
+        aa.SendString("stop 2-1")
     End Sub
 
     Private Sub Cmdshowcasparcgwindow_Click(sender As Object, e As EventArgs)
 
     End Sub
-
-
 
     <DllImport("user32.dll")>
     Private Shared Function SetParent(hWndChild As IntPtr, hWndNewParent As IntPtr) As IntPtr
