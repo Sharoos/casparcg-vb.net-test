@@ -74,7 +74,7 @@ Partial Class Form1
         Me.TextBox2.Location = New System.Drawing.Point(12, 67)
         Me.TextBox2.Multiline = True
         Me.TextBox2.Name = "TextBox2"
-        Me.TextBox2.Size = New System.Drawing.Size(237, 195)
+        Me.TextBox2.Size = New System.Drawing.Size(237, 172)
         Me.TextBox2.TabIndex = 5
         '
         'seekTimer
@@ -83,14 +83,14 @@ Partial Class Form1
         '
         'Panel1
         '
-        Me.Panel1.Location = New System.Drawing.Point(255, 12)
+        Me.Panel1.Location = New System.Drawing.Point(255, -11)
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(395, 250)
         Me.Panel1.TabIndex = 8
         '
         'Panel2
         '
-        Me.Panel2.Location = New System.Drawing.Point(250, 11)
+        Me.Panel2.Location = New System.Drawing.Point(250, -12)
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(411, 25)
         Me.Panel2.TabIndex = 9
@@ -98,9 +98,9 @@ Partial Class Form1
         'Panel3
         '
         Me.Panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.Panel3.Location = New System.Drawing.Point(790, 12)
+        Me.Panel3.Location = New System.Drawing.Point(688, 12)
         Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(395, 250)
+        Me.Panel3.Size = New System.Drawing.Size(395, 227)
         Me.Panel3.TabIndex = 9
         '
         'Form1
@@ -108,7 +108,7 @@ Partial Class Form1
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.Black
-        Me.ClientSize = New System.Drawing.Size(670, 302)
+        Me.ClientSize = New System.Drawing.Size(656, 249)
         Me.Controls.Add(Me.Panel3)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Panel1)
