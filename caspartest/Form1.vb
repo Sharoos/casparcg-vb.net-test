@@ -39,7 +39,7 @@ Public Class Form1
             End Try
 
             ' Introduce a delay to allow CasparCG to fully start
-            System.Threading.Thread.Sleep(2000) ' Adjust the delay as needed
+            System.Threading.Thread.Sleep(10000) ' Adjust the delay as needed
 
             ' Connect to the server
             aa.Connect("127.0.0.1", 5250)
